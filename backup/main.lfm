@@ -1,0 +1,62 @@
+object Form1: TForm1
+  Left = 615
+  Height = 514
+  Top = 165
+  Width = 988
+  Caption = 'Form1'
+  ClientHeight = 514
+  ClientWidth = 988
+  LCLVersion = '2.2.2.0'
+  object OpenBtn: TButton
+    Left = 32
+    Height = 25
+    Top = 24
+    Width = 75
+    Caption = 'Open'
+    OnClick = OpenBtnClick
+    TabOrder = 0
+  end
+  object Image: TImage
+    Left = 40
+    Height = 272
+    Top = 72
+    Width = 344
+  end
+  object EditImage: TImage
+    Left = 404
+    Height = 273
+    Top = 72
+    Width = 348
+  end
+  object ProcessBtn: TButton
+    Left = 120
+    Height = 25
+    Top = 24
+    Width = 75
+    Caption = 'Proses'
+    OnClick = ProcessBtnClick
+    TabOrder = 1
+  end
+  object tBrightnessBar: TTrackBar
+    Left = 32
+    Height = 25
+    Top = 392
+    Width = 728
+    Max = 100
+    Position = 0
+    TabOrder = 2
+  end
+  object tGainBar: TTrackBar
+    Left = 32
+    Height = 25
+    Top = 432
+    Width = 112
+    Max = 4
+    Position = 0
+    TabOrder = 3
+  end
+  object OpenPictureDialog: TOpenPictureDialog
+    Left = 640
+    Top = 16
+  end
+end
