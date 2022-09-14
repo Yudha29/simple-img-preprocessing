@@ -18,8 +18,6 @@ type
     EditImage: TImage;
     OpenBtn: TButton;
     OpenPictureDialog: TOpenPictureDialog;
-    tBrightnessBar: TTrackBar;
-    tGainBar: TTrackBar;
     procedure OpenBtnClick(Sender: TObject);
     procedure ProcessBtnClick(Sender: TObject);
     function clipValue(value: integer): integer;
@@ -41,7 +39,7 @@ implementation
 uses Windows;
 
 var
-  RValues, GValues, BValues, RValues2, GValues2, BValues2 : array[0..1000, 0..1000] of byte;
+  RValues, GValues, BValues, BinaryValues : array[0..1000, 0..1000] of byte;
 
 procedure TForm1.OpenBtnClick(Sender: TObject);
 var
@@ -59,9 +57,6 @@ begin
           RValues[x, y] := getRValue(image.Canvas.Pixels[x, y]);
           GValues[x, y] := getGValue(image.Canvas.Pixels[x, y]);
           BValues[x, y] := getBValue(image.Canvas.Pixels[x, y]);
-          RValues2[x, y] := getRValue(image.Canvas.Pixels[x, y]);
-          GValues2[x, y] := getGValue(image.Canvas.Pixels[x, y]);
-          BValues2[x, y] := getBValue(image.Canvas.Pixels[x, y]);
         end;
       end;
   end;
@@ -70,22 +65,39 @@ end;
 procedure TForm1.ProcessBtnClick(Sender: TObject);
 var
   x, y : integer;
-  brightnessR, brightnessG, brightnessB : integer;
+  adjR, adjG, adjB, gray : integer;
 begin
   for y:=0 to image.Height-1 do
   begin
     for x:=0 to image.Width-1 do
     begin
-      brightnessR := tGainBar.Position * RValues[x, y] + tBrightnessBar.Position;
-      brightnessR := clipValue(brightnessR);
+      adjR := 2 * RValues[x, y];
+      adjG := 2 * GValues[x, y];
+      adjB := 2 * BValues[x, y];
 
-      brightnessG := tGainBar.Position * GValues[x, y] + tBrightnessBar.Position;
-      brightnessG := clipValue(brightnessG);
+      RValues[x, y] := clipValue(adjR);
+      GValues[x, y] := clipValue(adjG);
+      BValues[x, y] := clipValue(adjB);
+    end;
+  end;
 
-      brightnessB := tGainBar.Position * BValues[x, y] + tBrightnessBar.Position;
-      brightnessB := clipValue(brightnessB);
+  for y:=0 to image.Height-1 do
+  begin
+    for x:=0 to image.Width-1 do
+    begin
+      gray := (RValues[x, y] + GValues[x, y] + BValues[x, y]) div 3;
+      if (gray <= 64) then
+        BinaryValues[x, y] := 0
+      else
+        BinaryValues[x, y] := 255;
+    end;
+  end;
 
-      EditImage.Canvas.Pixels[x, y] := RGB(brightnessR, brightnessG, brightnessB);
+  for y:=0 to image.Height-1 do
+  begin
+    for x:=0 to image.Width-1 do
+    begin
+      EditImage.Canvas.Pixels[x, y] := RGB(BinaryValues[x, y], BinaryValues[x, y], BinaryValues[x, y]);
     end;
   end;
 end;
